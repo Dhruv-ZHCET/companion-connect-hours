@@ -25,12 +25,12 @@ const LoginPage: React.FC = () => {
         id: '123456',
         name: 'Demo User',
         email,
-        role: Math.random() > 0.5 ? 'renter' : 'companion',
+        role: Math.random() > 0.5 ? 'renter' : 'companion' as const,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        interests: ['Travel', 'Movies', 'Food'],
+        interests: ['Travel', 'Movies', 'Food'] as string[],
         bio: 'This is a demo user for the Rent-a-Companion app.',
         hourlyRate: 25,
-      } as const;
+      };
 
       setUser(mockUser);
       

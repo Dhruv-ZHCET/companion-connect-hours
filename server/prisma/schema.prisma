@@ -1,0 +1,66 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String
+  password     String
+  role         String        @default("renter")
+  avatar       String?
+  bio          String?
+  hourlyRate   Float?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  interests    Interest[]
+  languages    Language[]
+  availability Availability?
+  asRenter     Booking[]     @relation("RenterBookings")
+  asCompanion  Booking[]     @relation("CompanionBookings")
+}
+
+model Interest {
+  id    String @id @default(uuid())
+  name  String @unique
+  users User[]
+}
+
+model Language {
+  id    String @id @default(uuid())
+  name  String @unique
+  users User[]
+}
+
+model Availability {
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monday    Boolean @default(false)
+  tuesday   Boolean @default(false)
+  wednesday Boolean @default(false)
+  thursday  Boolean @default(false)
+  friday    Boolean @default(false)
+  saturday  Boolean @default(false)
+  sunday    Boolean @default(false)
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  status      String   @default("pending") // pending, confirmed, cancelled, completed
+  renterId    String
+  companionId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  renter      User     @relation("RenterBookings", fields: [renterId], references: [id])
+  companion   User     @relation("CompanionBookings", fields: [companionId], references: [id])
+}
