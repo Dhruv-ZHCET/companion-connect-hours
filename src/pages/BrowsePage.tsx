@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -70,10 +71,12 @@ const BrowsePage: React.FC = () => {
     
     const matchesLocation = 
       !locationFilter || 
+      locationFilter === 'all-locations' ||
       companion.location === locationFilter;
     
     const matchesInterest = 
       !interestFilter || 
+      interestFilter === 'all-interests' ||
       companion.interests.includes(interestFilter);
     
     return matchesSearch && matchesPrice && matchesLocation && matchesInterest;
@@ -131,7 +134,7 @@ const BrowsePage: React.FC = () => {
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all-locations">All Locations</SelectItem>
                     {uniqueLocations.map(location => (
                       <SelectItem key={location} value={location}>{location}</SelectItem>
                     ))}
@@ -146,7 +149,7 @@ const BrowsePage: React.FC = () => {
                     <SelectValue placeholder="Select interest" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Interests</SelectItem>
+                    <SelectItem value="all-interests">All Interests</SelectItem>
                     {uniqueInterests.map(interest => (
                       <SelectItem key={interest} value={interest}>{interest}</SelectItem>
                     ))}
