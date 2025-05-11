@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore, UserRole } from '@/stores/userStore';
 import { useToast } from '@/components/ui/use-toast';
 
 const LoginPage: React.FC = () => {
@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
         id: '123456',
         name: 'Demo User',
         email,
-        role: Math.random() > 0.5 ? 'renter' : 'companion' as const,
+        role: (Math.random() > 0.5 ? 'renter' : 'companion') as UserRole,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
         interests: ['Travel', 'Movies', 'Food'] as string[],
         bio: 'This is a demo user for the Rent-a-Companion app.',

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,21 +18,46 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { mockCompanions, Companion } from '@/mocks/companions';
+import { useToast } from '@/components/ui/use-toast';
+import { getCompanions } from '@/services/api';
 
 const BrowsePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [locationFilter, setLocationFilter] = useState<string | undefined>(undefined);
   const [interestFilter, setInterestFilter] = useState<string | undefined>(undefined);
+  const [companions, setCompanions] = useState<Companion[]>(mockCompanions);
+  const { toast } = useToast();
+  
+  // Try to fetch companions from API but fallback to mock data
+  useEffect(() => {
+    const fetchCompanions = async () => {
+      try {
+        const data = await getCompanions();
+        if (data && data.length > 0) {
+          setCompanions(data);
+        }
+      } catch (error) {
+        console.error('Error fetching companions:', error);
+        toast({
+          title: "Using mock data",
+          description: "Could not connect to the server. Using sample data instead.",
+        });
+        // Keep using mock data when API fails
+      }
+    };
+    
+    fetchCompanions();
+  }, [toast]);
   
   // Extract unique locations and interests for filters
-  const uniqueLocations = Array.from(new Set(mockCompanions.map(c => c.location)));
+  const uniqueLocations = Array.from(new Set(companions.map(c => c.location)));
   
-  const allInterests = mockCompanions.flatMap(c => c.interests);
+  const allInterests = companions.flatMap(c => c.interests);
   const uniqueInterests = Array.from(new Set(allInterests));
 
   // Filter companions based on search and filters
-  const filteredCompanions = mockCompanions.filter(companion => {
+  const filteredCompanions = companions.filter(companion => {
     const matchesSearch = 
       searchTerm === '' || 
       companion.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
